@@ -16,16 +16,16 @@ public class Player_Behaviour : MonoBehaviour
         thisRender = GetComponent<SpriteRenderer>();
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter2D(Collider2D o)
     {
         thisRender.color = Color.green;
-        Debug.Log("Oncollision");
+        Debug.Log("stay");
     }
 
-    void OnTriggerExit(Collider other)
+    void OnTriggerExit2D(Collider2D o)
     {
         thisRender.color = Color.white;
-        Debug.Log("Exitcollision");
+        Debug.Log("exit");
     }
 
     // Update is called once per frame
