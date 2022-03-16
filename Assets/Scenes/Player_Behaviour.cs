@@ -5,15 +5,26 @@ using UnityEngine;
 public class Player_Behaviour : MonoBehaviour
 {
 
-    Transform local_pos; 
+    //this component
+    Transform thisPos; 
     SpriteRenderer thisRender;
+    Rigidbody2D thisRbody2d;
+
+    //public variable
     public float speed;
+    public float smoothValue;
+
+    //private variable
+    public  Vector2 targetPos = Vector2.zero; //public is debug perpose
+    private Vector2 movePos = Vector2.zero;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        local_pos = GetComponent<Transform>();
+        thisPos = GetComponent<Transform>();
         thisRender = GetComponent<SpriteRenderer>();
+        thisRbody2d = GetComponent<Rigidbody2D>();
     }
 
     void OnTriggerEnter2D(Collider2D o)
@@ -33,23 +44,30 @@ public class Player_Behaviour : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            local_pos.position += Vector3.up * speed * Time.deltaTime;
+            targetPos += Vector2.up * speed * Time.deltaTime;
             Debug.Log("W KEy input");
         }
         if (Input.GetKey(KeyCode.A))
         {
-            local_pos.position += Vector3.left * speed * Time.deltaTime;
+            targetPos += Vector2.left * speed * Time.deltaTime;
             Debug.Log("A KEy input");
         }
         if (Input.GetKey(KeyCode.S))
         {
-            local_pos.position += Vector3.down * speed * Time.deltaTime;
+            targetPos += Vector2.down * speed * Time.deltaTime;
             Debug.Log("S KEy input");
         }
         if (Input.GetKey(KeyCode.D))
         {
-            local_pos.position += Vector3.right * speed * Time.deltaTime;
+            targetPos += Vector2.right * speed * Time.deltaTime;
             Debug.Log("D KEy input");
         }
+    }
+
+    void FixedUpdate()
+    {
+        movePos = thisRbody2d.position;
+        movePos = Vector2.Lerp(movePos, targetPos, smoothValue*Time.deltaTime);
+        thisRbody2d.MovePosition(targetPos);
     }
 }
