@@ -1,28 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class Player_Behaviour : MonoBehaviour
 {
 
-    //this component
-    Transform thisPos; 
+    Transform thisTransform; 
     SpriteRenderer thisRender;
     Rigidbody2D thisRbody2d;
 
-    //public variable
+    [Header("Player value")]
     public float speed;
     public float smoothValue;
 
-    //private variable
-    public  Vector2 targetPos = Vector2.zero; //public is debug perpose
+    [SerializeField]
+    private Vector2 targetPos = Vector2.zero; //public is debug perpose
     private Vector2 movePos = Vector2.zero;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        thisPos = GetComponent<Transform>();
+        thisTransform = GetComponent<Transform>();
         thisRender = GetComponent<SpriteRenderer>();
         thisRbody2d = GetComponent<Rigidbody2D>();
     }
