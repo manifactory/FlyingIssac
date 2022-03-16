@@ -1,28 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
-public class Player_Behaviour : MonoBehaviour
+public class player : MonoBehaviour
 {
 
-    Transform thisTransform; 
     SpriteRenderer thisRender;
     Rigidbody2D thisRbody2d;
 
-    [Header("Player value")]
+    [Header("movement value")]
     public float speed;
     public float smoothValue;
 
     [SerializeField]
-    private Vector2 targetPos = Vector2.zero; //public is debug perpose
+    private Vector2 targetPos = Vector2.zero;
     private Vector2 movePos = Vector2.zero;
+
+    private float mainTimer = 0.0f;
+
+    //shoot value
+    public float shootInterval = 0.0f;
+    private float shootTimer = 0.0f;
+    
 
 
     // Start is called before the first frame update
     void Start()
     {
-        thisTransform = GetComponent<Transform>();
         thisRender = GetComponent<SpriteRenderer>();
         thisRbody2d = GetComponent<Rigidbody2D>();
     }
@@ -42,25 +46,37 @@ public class Player_Behaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        mainTimer+=Time.deltaTime;
         if (Input.GetKey(KeyCode.W))
         {
             targetPos += Vector2.up * speed * Time.deltaTime;
-            Debug.Log("W KEy input");
+            Debug.Log("W key input");
         }
         if (Input.GetKey(KeyCode.A))
         {
             targetPos += Vector2.left * speed * Time.deltaTime;
-            Debug.Log("A KEy input");
+            Debug.Log("A key input");
         }
         if (Input.GetKey(KeyCode.S))
         {
             targetPos += Vector2.down * speed * Time.deltaTime;
-            Debug.Log("S KEy input");
+            Debug.Log("S key input");
         }
         if (Input.GetKey(KeyCode.D))
         {
             targetPos += Vector2.right * speed * Time.deltaTime;
-            Debug.Log("D KEy input");
+            Debug.Log("D key input");
+        }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            
+            if(mainTimer-shootTimer>=shootInterval){
+                Debug.Log("a");
+                shootTimer = mainTimer;
+                GameObject t_bullet = PoolingManager.instance.GetQueue();
+                t_bullet.transform.position = thisRbody2d.position + Vector2.up;
+            }
         }
     }
 
@@ -68,6 +84,7 @@ public class Player_Behaviour : MonoBehaviour
     {
         movePos = thisRbody2d.position;
         movePos = Vector2.Lerp(movePos, targetPos, smoothValue*Time.deltaTime);
+        //
         thisRbody2d.MovePosition(targetPos);
     }
 }
