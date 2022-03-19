@@ -8,7 +8,7 @@ public class PoolingManager : MonoBehaviour
     public static PoolingManager instance;
 
     public GameObject origin_prefab = null;
-    public static uint POOLING_LIMIT = 100;
+    public uint POOLING_LIMIT = 100;
 
     private Queue<GameObject> m_queue = new Queue<GameObject>();
 
@@ -18,7 +18,7 @@ public class PoolingManager : MonoBehaviour
     void Start()
     {
         instance = this;
-
+        m_queue.Clear();
         for(int i=0;i<POOLING_LIMIT;i++)
         {
             //프리팹 오브젝트 맵상 위치,각도 무시

@@ -42,3 +42,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UI
+    uniqueID: 4294451165
+    locked: 0
+  - name: Stage
+    uniqueID: 621266407
+    locked: 0
+  - name: Player
+    uniqueID: 4292135471
+    locked: 0
+  - name: Bullet
+    uniqueID: 3397830685
+    locked: 0

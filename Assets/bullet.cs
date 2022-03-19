@@ -5,32 +5,72 @@ using UnityEngine;
 public class bullet : MonoBehaviour
 {
 
-    private Rigidbody2D thisRbody2d = null;
+    private Transform thisTrans = null;
 
     public float speed = 0;
+    public float sin_rate = 0.0f;
+    public float sin_size = 0.0f;
+
+    private Collider2D t_Col2d = null;
+
+    public float destroyInterval = 1.0f;
+    public float destroyDelay = 0.2f;
+    private float mainTimer = 0.0f;
+     
+    public BulletType bullet_type = BulletType.Normal;
+
+    public enum BulletType{
+        Normal,
+        Pierce,
+        Blood
+    }
+
+    public ShootType shoot_type = ShootType.Normal;
+
+    public enum ShootType{
+        Normal,
+        Sin,
+        Hooming
+    }
 
     // Start is called before the first frame update
     void OnEnable()
     {
-        thisRbody2d = GetComponent<Rigidbody2D>();
-        thisRbody2d.AddForce(Vector2.up*speed);
-        //StartCoroutine(DestroyBullet());
-    }
-
-    IEnumerator DestroyBullet()
-    {
-        yield return new WaitForSeconds(1.0f);
-        PoolingManager.instance.InsertQueue(gameObject);
+        //init
+        mainTimer = 0.0f;
+        t_Col2d = null;
+        thisTrans = GetComponent<Transform>();
     }
 
     void OnTriggerEnter2D(Collider2D o)
     {
-        PoolingManager.instance.InsertQueue(gameObject);
+        t_Col2d = o;
     }
 
     // Update is called once per frame
     void Update()
     {
+        mainTimer += Time.deltaTime;
+
+        //Disable 조건
+        if((t_Col2d != null)&&(t_Col2d.tag=="Obstacle"))
+            PoolingManager.instance.InsertQueue(gameObject);
+        else if(mainTimer >= destroyInterval)
+            PoolingManager.instance.InsertQueue(gameObject);
         
+        //움직임 처리
+        thisTrans.Translate(Vector3.up * speed * Time.deltaTime);
+        //사인파 움직임 처리
+        thisTrans.rotation = Quaternion.Euler(new Vector3(0, 0, sin_size * Mathf.Sin(mainTimer*sin_rate+Mathf.PI/2)));
+
+            //TODO:여기 사라지기전 모션 추가
+            //StartCoroutine(destoryMotion());
+    }
+
+    IEnumerator destoryMotion()
+    {
+        //thisRbody2d.velocity = up;
+        yield return new WaitForSeconds(destroyDelay);
+        PoolingManager.instance.InsertQueue(gameObject);
     }
 }

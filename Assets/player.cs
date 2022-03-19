@@ -22,13 +22,18 @@ public class player : MonoBehaviour
     public float shootInterval = 0.0f;
     private float shootTimer = 0.0f;
     
-
+    public float IPD = 0.5f;
+    public float SD = 0.2f;
+    private float wrinkleLeft = 0.0f;
 
     // Start is called before the first frame update
     void Start()
     {
         thisRender = GetComponent<SpriteRenderer>();
         thisRbody2d = GetComponent<Rigidbody2D>();
+
+        targetPos = this.transform.position;
+        movePos = targetPos;
     }
 
     void OnTriggerEnter2D(Collider2D o)
@@ -50,41 +55,44 @@ public class player : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             targetPos += Vector2.up * speed * Time.deltaTime;
-            Debug.Log("W key input");
         }
         if (Input.GetKey(KeyCode.A))
         {
             targetPos += Vector2.left * speed * Time.deltaTime;
-            Debug.Log("A key input");
         }
         if (Input.GetKey(KeyCode.S))
         {
             targetPos += Vector2.down * speed * Time.deltaTime;
-            Debug.Log("S key input");
         }
         if (Input.GetKey(KeyCode.D))
         {
             targetPos += Vector2.right * speed * Time.deltaTime;
-            Debug.Log("D key input");
         }
 
         if (Input.GetKey(KeyCode.Space))
         {
             
             if(mainTimer-shootTimer>=shootInterval){
-                Debug.Log("a");
                 shootTimer = mainTimer;
+
                 GameObject t_bullet = PoolingManager.instance.GetQueue();
-                t_bullet.transform.position = thisRbody2d.position + Vector2.up;
+
+                //발사 위치 지정
+                t_bullet.transform.position = thisRbody2d.position + Vector2.up*SD + Vector2.left*(IPD/2) - Vector2.left*wrinkleLeft ;
+                wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
+
+                //발사 각도 지정 (근데 굳이 필요 없을수도)
+                t_bullet.transform.rotation = Quaternion.Euler(0,0,0);
             }
         }
     }
 
     void FixedUpdate()
     {
+        //Deprecated
         movePos = thisRbody2d.position;
         movePos = Vector2.Lerp(movePos, targetPos, smoothValue*Time.deltaTime);
-        //
+        
         thisRbody2d.MovePosition(targetPos);
     }
 }
