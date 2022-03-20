@@ -54,9 +54,9 @@ public class bullet : MonoBehaviour
 
         //Disable 조건
         if((t_Col2d != null)&&(t_Col2d.tag=="Obstacle"))
-            PoolingManager.instance.InsertQueue(gameObject);
+            PoolingManager.instance.ReturnObject("bullet",gameObject);
         else if(mainTimer >= destroyInterval)
-            PoolingManager.instance.InsertQueue(gameObject);
+            PoolingManager.instance.ReturnObject("bullet",gameObject);
         
         //움직임 처리
         thisTrans.Translate(Vector3.up * speed * Time.deltaTime);
@@ -71,6 +71,6 @@ public class bullet : MonoBehaviour
     {
         //thisRbody2d.velocity = up;
         yield return new WaitForSeconds(destroyDelay);
-        PoolingManager.instance.InsertQueue(gameObject);
+        PoolingManager.instance.ReturnObject("bullet",gameObject);
     }
 }

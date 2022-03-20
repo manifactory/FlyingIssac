@@ -7,10 +7,7 @@ public class PoolingManager : MonoBehaviour
 
     public static PoolingManager instance;
 
-    public GameObject origin_prefab = null;
-    public uint POOLING_LIMIT = 100;
-
-    private Queue<GameObject> m_queue = new Queue<GameObject>();
+    private Hashtable ObjectPool = new Hashtable();
 
 
 
@@ -18,26 +15,35 @@ public class PoolingManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        m_queue.Clear();
-        for(int i=0;i<POOLING_LIMIT;i++)
-        {
-            //프리팹 오브젝트 맵상 위치,각도 무시
-            GameObject t_object = Instantiate(origin_prefab, Vector3.zero, Quaternion.identity);
-            m_queue.Enqueue(t_object);
-            t_object.SetActive(false);
-        }
+        ObjectPool.Clear();
         Debug.Log("pool compleate");
     }
 
-    public void InsertQueue(GameObject p_object)
+    public void AddObjectPool(string name, uint size, GameObject o_object)
     {
-        m_queue.Enqueue(p_object);
+        ObjectPool.Add(name, new Stack<GameObject>());
+        for(int i=0;i<size;i++)
+        {
+            //프리팹 오브젝트 맵상 위치,각도 무시
+            
+            GameObject t_object = Instantiate(o_object, Vector3.zero, Quaternion.identity);
+            Stack<GameObject> t_stack = ObjectPool[name] as Stack<GameObject>;
+            t_stack.Push(t_object);
+            t_object.SetActive(false);
+        }
+    }
+
+    public void ReturnObject(string name, GameObject p_object)
+    {
+        Stack<GameObject> t_stack = ObjectPool[name] as Stack<GameObject>;
+        t_stack.Push(p_object);
         p_object.SetActive(false);
     }
 
-    public GameObject GetQueue()
+    public GameObject GetObject(string name)
     {
-        GameObject t_object = m_queue.Dequeue();
+        Stack<GameObject> t_stack = ObjectPool[name] as Stack<GameObject>;
+        GameObject t_object = t_stack.Pop();
         t_object.SetActive(true);
         return t_object;
     }
