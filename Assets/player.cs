@@ -19,7 +19,6 @@ public class player : MonoBehaviour
     private float mainTimer = 0.0f;
 
     [Header("shoot value")]
-    public GameObject bullet_prefab;
     public float shootInterval = 0.0f;
     private float shootTimer = 0.0f;
     
@@ -46,8 +45,6 @@ public class player : MonoBehaviour
         
 
         Debug.Log(s_boundary);
-        
-        PoolingManager.instance.AddObjectPool("bullet", 100, bullet_prefab);
     }
 
     void OnTriggerEnter2D(Collider2D o)
@@ -100,11 +97,8 @@ public class player : MonoBehaviour
             
             if(mainTimer-shootTimer>=shootInterval){
                 shootTimer = mainTimer;
-
-                GameObject t_bullet = PoolingManager.instance.GetObject("bullet");
-
-                //발사 위치 지정
-                t_bullet.transform.position = thisRbody2d.position + Vector2.up*SD + Vector2.left*(IPD/2) - Vector2.left*wrinkleLeft ;
+                
+                GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet", thisRbody2d.position + Vector2.up*SD + Vector2.left*(IPD/2) - Vector2.left*wrinkleLeft);
                 wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
 
                 //발사 각도 지정 (굳이 필요 없을수도)

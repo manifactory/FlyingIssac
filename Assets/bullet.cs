@@ -42,6 +42,12 @@ public class bullet : MonoBehaviour
         thisTrans = GetComponent<Transform>();
     }
 
+    void OnDisable()
+    {
+        ObjectPooler.ReturnToPool(gameObject);
+        //CancelInvoke();    // Monobehaviour에 Invoke가 있다면
+    }
+
     void OnTriggerEnter2D(Collider2D o)
     {
         t_Col2d = o;
@@ -54,9 +60,9 @@ public class bullet : MonoBehaviour
 
         //Disable 조건
         if((t_Col2d != null)&&(t_Col2d.tag=="Obstacle"))
-            PoolingManager.instance.ReturnObject("bullet",gameObject);
+            gameObject.SetActive(false);
         else if(mainTimer >= destroyInterval)
-            PoolingManager.instance.ReturnObject("bullet",gameObject);
+            gameObject.SetActive(false);
         
         //움직임 처리
         thisTrans.Translate(Vector3.up * speed * Time.deltaTime);
@@ -71,6 +77,7 @@ public class bullet : MonoBehaviour
     {
         //thisRbody2d.velocity = up;
         yield return new WaitForSeconds(destroyDelay);
-        PoolingManager.instance.ReturnObject("bullet",gameObject);
+        //---
+        //gameObject.SetActive(false);
     }
 }
