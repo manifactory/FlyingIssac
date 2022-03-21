@@ -37,7 +37,7 @@ public class player : MonoBehaviour
         targetPos = this.transform.position;
         movePos = targetPos;
 
-        //static
+        //플레이어 움직임 경계 설정
         s_boundary.xMin = GameObject.Find("TopLeft").transform.position.x;
         s_boundary.xMax = GameObject.Find("BottomRight").transform.position.x;
         s_boundary.yMin = GameObject.Find("BottomRight").transform.position.y;
@@ -66,7 +66,7 @@ public class player : MonoBehaviour
 
         PlayerMovement();
         ShootBullet();
-        LimitBoundary();
+        LimitBoundary(); //플레이어 움직임 제한
         thisRbody2d.MovePosition(targetPos);
     }
 
@@ -98,11 +98,11 @@ public class player : MonoBehaviour
             if(mainTimer-shootTimer>=shootInterval){
                 shootTimer = mainTimer;
                 
-                GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet", thisRbody2d.position + Vector2.up*SD + Vector2.left*(IPD/2) - Vector2.left*wrinkleLeft);
+                Vector2 spawnpos =  thisRbody2d.position + Vector2.up*SD + Vector2.left*(IPD/2) - Vector2.left*wrinkleLeft;
                 wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
-
-                //발사 각도 지정 (굳이 필요 없을수도)
-                t_bullet.transform.rotation = Quaternion.Euler(0,0,0);
+                
+                GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet", spawnpos);
+                
             }
         }
     }
