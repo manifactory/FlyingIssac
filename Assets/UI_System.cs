@@ -18,7 +18,6 @@ public class UI_System : MonoBehaviour
     void init_indicator(string name, uint icon_count_max, int icon_pos_gap)
     {
         GameObject origin_icon = GameObject.Find(name).transform.Find("indicator_element").gameObject;
-
     }
 
     void SetNamedTextElement(string parent_name, string ele_name, string _text)
