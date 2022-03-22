@@ -90,7 +90,6 @@ public class ObjectPooler : MonoBehaviour
 
 		return objects.ConvertAll(x => x.GetComponent<T>());
 	}
-
 	public static void ReturnToPool(GameObject obj)
 	{
 		if (!inst.poolDictionary.ContainsKey(obj.name))
