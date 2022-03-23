@@ -101,8 +101,9 @@ public class player : MonoBehaviour
                 Vector2 spawnpos =  thisRbody2d.position + Vector2.up*SD + Vector2.left*(IPD/2) - Vector2.left*wrinkleLeft;
                 wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
                 
-                GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet", spawnpos);
-                
+                GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet",spawnpos);
+                bullet p_bullet = t_bullet.GetComponent<bullet>();
+                p_bullet.Setup(10.0f,4.0f,"Enemy");
             }
         }
     }
@@ -119,7 +120,5 @@ public class player : MonoBehaviour
         movePos = thisRbody2d.position;
         movePos = Vector2.Lerp(movePos, targetPos, smoothValue*Time.deltaTime);
         //----
-
-        
     }
 }
