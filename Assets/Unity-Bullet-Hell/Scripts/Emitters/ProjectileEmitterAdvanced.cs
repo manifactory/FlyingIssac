@@ -159,9 +159,7 @@ namespace BulletHell
                             {
                                 Groups[g].Direction = (Target.transform.position - transform.position).normalized;
                             }
-                            //여기서 다름
                             node.Item.Velocity = Speed * Rotate(Groups[g].Direction, -rotation).normalized;
-                            //---
                             node.Item.Color = Color.Evaluate(0);
                             node.Item.Acceleration = Acceleration;
                             node.Item.FollowTarget = UseFollowTarget;
