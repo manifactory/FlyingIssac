@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.8598063, y: 0.36934716, z: -0.91796875}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -43,10 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1372cc78658a0c840b3ae45ca69dc32e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Texture: {fileID: 0}
+  Texture: {fileID: 2800000, guid: cdef6b2dfe3cf4a4fbafe64dc6a55f80, type: 3}
   Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   ZIndez: 0
-  PixelSnap: 0
+  PixelSnap: 1
   StaticColor: 0
   Color: {r: 0, g: 0, b: 0, a: 0}
   MaxProjectileCount: 50000
