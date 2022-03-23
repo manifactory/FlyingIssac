@@ -32,7 +32,6 @@ public class player : MonoBehaviour
     void Start()
     {
         thisRender = GetComponent<SpriteRenderer>();
-        thisRbody2d = GetComponent<Rigidbody2D>();
 
         targetPos = this.transform.position;
         movePos = targetPos;
@@ -67,7 +66,7 @@ public class player : MonoBehaviour
         PlayerMovement();
         ShootBullet();
         LimitBoundary(); //플레이어 움직임 제한
-        thisRbody2d.MovePosition(targetPos);
+        this.transform.position = targetPos;
     }
 
     void PlayerMovement()
@@ -98,7 +97,7 @@ public class player : MonoBehaviour
             if(mainTimer-shootTimer>=shootInterval){
                 shootTimer = mainTimer;
                 
-                Vector2 spawnpos =  thisRbody2d.position + Vector2.up*SD + Vector2.left*(IPD/2) - Vector2.left*wrinkleLeft;
+                Vector2 spawnpos =  this.transform.position + Vector3.up*SD + Vector3.left*(IPD/2) - Vector3.left*wrinkleLeft;
                 wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
                 
                 GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet",spawnpos);
@@ -117,7 +116,7 @@ public class player : MonoBehaviour
     void FixedUpdate()
     {
         //---Deprecated
-        movePos = thisRbody2d.position;
+        movePos = this.transform.position;
         movePos = Vector2.Lerp(movePos, targetPos, smoothValue*Time.deltaTime);
         //----
     }

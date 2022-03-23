@@ -99,11 +99,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
+  momentum: 0
   destroyTime: 1
   sin_rate: 0
   sin_size: 0
-  bullet_type: 0
-  shoot_type: 0
+  target: 
 --- !u!58 &8409540610778067508
 CircleCollider2D:
   m_ObjectHideFlags: 0
