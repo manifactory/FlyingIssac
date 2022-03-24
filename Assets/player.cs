@@ -15,6 +15,8 @@ public class player : MonoBehaviour
     [SerializeField]
     private Vector2 targetPos = Vector2.zero;
     private Vector2 movePos = Vector2.zero;
+    private Vector2 lastPos = Vector2.zero;
+    private Vector2 momentum = Vector2.zero;
 
     private float mainTimer = 0.0f;
 
@@ -48,25 +50,29 @@ public class player : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D o)
     {
-        thisRender.color = Color.green;
-        Debug.Log("stay");
+        if(o.GetComponent<bullet>().target == "Player")
+            thisRender.color = Color.red;
     }
 
     void OnTriggerExit2D(Collider2D o)
     {
         thisRender.color = Color.white;
-        Debug.Log("exit");
     }
 
     // Update is called once per frame
     void Update()
     {
         mainTimer+=Time.deltaTime;
-
+        
         PlayerMovement();
-        ShootBullet();
+        if (Input.GetKey(KeyCode.Space))
+            ShootBullet();
         LimitBoundary(); //플레이어 움직임 제한
+
         this.transform.position = targetPos;
+
+        momentum=(targetPos - lastPos)*50.0f;
+        lastPos = targetPos;
     }
 
     void PlayerMovement()
@@ -90,20 +96,17 @@ public class player : MonoBehaviour
     }
 
     void ShootBullet()
-    {
-        if (Input.GetKey(KeyCode.Space))
-        {
+    {    
+        if(mainTimer-shootTimer>=shootInterval){
+            shootTimer = mainTimer;
             
-            if(mainTimer-shootTimer>=shootInterval){
-                shootTimer = mainTimer;
-                
-                Vector2 spawnpos =  this.transform.position + Vector3.up*SD + Vector3.left*(IPD/2) - Vector3.left*wrinkleLeft;
-                wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
-                
-                GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet",spawnpos);
-                bullet p_bullet = t_bullet.GetComponent<bullet>();
-                p_bullet.Setup(10.0f,4.0f,"Enemy");
-            }
+            Vector2 spawnpos =  this.transform.position + Vector3.up*SD + Vector3.left*(IPD/2) - Vector3.left*wrinkleLeft;
+            wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
+            
+            GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet_player",spawnpos);
+            bullet p_bullet = t_bullet.GetComponent<bullet>();
+            p_bullet.Setup(new Vector3(0+momentum.x,1.0f+momentum.y,0),4.0f,"Enemy");
+            //p_bullet.momentum = new Vector3(0,-5.0f,0);
         }
     }
 

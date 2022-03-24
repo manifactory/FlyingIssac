@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 2261480787937363111}
   - component: {fileID: 2261480787937363110}
   - component: {fileID: 2261480787937363115}
-  - component: {fileID: 8409540610778067508}
+  - component: {fileID: 7378541532101818648}
   m_Layer: 0
-  m_Name: tear 1
-  m_TagString: Untagged
+  m_Name: bullet2
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: -897136611
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0d89d94f8ac0ae54caf3f96cc39010a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cdef6b2dfe3cf4a4fbafe64dc6a55f80, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,13 +98,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 809bbe440cbbf6440a3c55b4a35934c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
-  momentum: 0
+  velocity: {x: 0, y: 0, z: 0}
+  momentum: {x: 0, y: 0, z: 0}
   destroyTime: 1
   sin_rate: 0
   sin_size: 0
   target: 
---- !u!58 &8409540610778067508
+--- !u!58 &7378541532101818648
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,6 +117,6 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.01}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.065

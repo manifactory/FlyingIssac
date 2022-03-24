@@ -7,12 +7,12 @@ public class bullet : MonoBehaviour
 
     private Transform start_transform;
 
-    public float speed = 0;
+    public Vector3 velocity;
+    public Vector3 momentum;
     public float destroyTime = 1.0f;
     private float mainTimer = 0.0f;
 
 
-    private float start_angle = 0.0f;
     public float sin_rate = 0.0f;
     public float sin_size = 0.0f;
 
@@ -23,10 +23,12 @@ public class bullet : MonoBehaviour
     {
         //init
         start_transform = this.transform;
-        Setup(0.0f, 1.0f, "");
-        SetSinValue(0.0f,0.0f);   
+        Setup(new Vector3(0,0,0), 1.0f, "");
+        SetSinValue(0.0f,0.0f);
+        
+        //start update coroutine
+        InvokeRepeating("BulletFixedUpdate",0,0.01f);
     }
-
     void OnDisable()
     {
         //TODO:여기 사라지기전 모션 추가
@@ -35,12 +37,11 @@ public class bullet : MonoBehaviour
         CancelInvoke();    // Monobehaviour에 Invoke가 있다면
     }
 
-    public void Setup(float _speed, float _destroyTime, string _target)
+    public void Setup(Vector3 _velo, float _destroyTime, string _target)
     {
         mainTimer = 0.0f;
-        start_angle = this.transform.eulerAngles.z;
 
-        speed = _speed;
+        velocity = _velo;
         destroyTime = _destroyTime;
 
         target = _target;
@@ -52,10 +53,7 @@ public class bullet : MonoBehaviour
         sin_size = s_size;
     }
 
-    
-
-    // Update is called once per frame
-    void Update()
+    void BulletFixedUpdate()
     {
         mainTimer += Time.deltaTime;
 
@@ -70,9 +68,8 @@ public class bullet : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-        //움직임 처리
-        this.transform.eulerAngles = new Vector3(0, 0, start_angle + sin_size * Mathf.Sin(mainTimer*sin_rate+Mathf.PI/2));
-        this.transform.Translate(0,speed * Time.deltaTime,0);
-        
+        velocity += momentum * Time.deltaTime;
+        this.transform.Translate(velocity*Time.fixedDeltaTime);
+        //this.transform.eulerAngles = start_transform.eulerAngles + new Vector3(0, 0, mainTimer);
     }
 }
