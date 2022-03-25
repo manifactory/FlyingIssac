@@ -858,8 +858,6 @@ GameObject:
   m_Component:
   - component: {fileID: 526822550}
   - component: {fileID: 526822551}
-  - component: {fileID: 526822553}
-  - component: {fileID: 526822552}
   m_Layer: 0
   m_Name: player_heart
   m_TagString: Player
@@ -934,43 +932,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &526822552
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526822549}
-  m_BodyType: 1
-  m_Simulated: 0
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!58 &526822553
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526822549}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.04
 --- !u!1 &593636751
 GameObject:
   m_ObjectHideFlags: 0
@@ -1140,6 +1101,8 @@ GameObject:
   - component: {fileID: 718064595}
   - component: {fileID: 718064594}
   - component: {fileID: 718064593}
+  - component: {fileID: 718064597}
+  - component: {fileID: 718064596}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1159,10 +1122,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0498bfef931bdeb49a75af7c0569a45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 1
   smoothValue: 1
   targetPos: {x: 0, y: 0}
-  shootInterval: 0.01
+  shootInterval: 0.1
   IPD: 0.25
   SD: 0.4
 --- !u!212 &718064594
@@ -1233,6 +1196,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &718064596
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718064592}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &718064597
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718064592}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.1
 --- !u!1 &743518825
 GameObject:
   m_ObjectHideFlags: 0
@@ -3421,7 +3421,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
-  - tag: bullet
+  - tag: bullet_player
+    prefab: {fileID: 2261480787937363114, guid: 6d6458734a66b2f4f958015f475378e3, type: 3}
+    size: 1000
+  - tag: bullet_enemy
+    prefab: {fileID: 2261480787937363114, guid: 69353905f6aed2e4ab5e2a1e5e3cde5b, type: 3}
+    size: 1000
+  - tag: bullet_pierce
     prefab: {fileID: 2261480787937363114, guid: 9cf5af31213c7e646a8647a62121a194, type: 3}
     size: 1000
 --- !u!4 &1943545485

@@ -13,6 +13,21 @@ public class boss : MonoBehaviour
         StartCoroutine(shotgun());
     }
 
+    void OnTriggerEnter2D(Collider2D o)
+    {
+        //GetComponent는 클래스내 변수에 할당해서 자원 소비를 줄여야 되는데 편의상 패스
+        if(o.GetComponent<bullet>().target == "Enemy")
+        {
+            GetComponent<SpriteRenderer>().color = Color.red;
+            o.gameObject.SetActive(false);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D o)
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
     IEnumerator shotgun()
     {
         yield return new WaitForSeconds(0.5f);
@@ -22,11 +37,9 @@ public class boss : MonoBehaviour
             for(float i=-2; i<=2; i+=0.1f)
             {
                 GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet_enemy"
-                ,gameObject.transform.position
+                ,this.transform.position
                 ,Quaternion.Euler(new Vector3(0,0,init_angle+180.0f*i)));
                 bullet p_bullet = t_bullet.GetComponent<bullet>();
-                p_bullet.Setup(new Vector3(0,0.5f,0),10.0f,"Player");
-                p_bullet.SetSinValue(5.0f,5.0f);
             }
             yield return new WaitForSeconds(0.5f);
         }

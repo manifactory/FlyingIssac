@@ -5,9 +5,6 @@ using UnityEngine;
 public class player : MonoBehaviour
 {
 
-    SpriteRenderer thisRender;
-    Rigidbody2D thisRbody2d;
-
     [Header("movement value")]
     public float speed;
     public float smoothValue;
@@ -33,8 +30,6 @@ public class player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        thisRender = GetComponent<SpriteRenderer>();
-
         targetPos = this.transform.position;
         movePos = targetPos;
 
@@ -43,56 +38,59 @@ public class player : MonoBehaviour
         s_boundary.xMax = GameObject.Find("BottomRight").transform.position.x;
         s_boundary.yMin = GameObject.Find("BottomRight").transform.position.y;
         s_boundary.yMax = GameObject.Find("TopLeft").transform.position.y;
-        
 
-        Debug.Log(s_boundary);
+        InvokeRepeating("PlayerFixedUpdate",0,0.01f);
     }
 
     void OnTriggerEnter2D(Collider2D o)
     {
+        //GetComponent는 클래스내 변수에 할당해서 자원 소비를 줄여야 되는데 편의상 패스
         if(o.GetComponent<bullet>().target == "Player")
-            thisRender.color = Color.red;
+        {
+            GetComponent<SpriteRenderer>().color = Color.red;
+            o.gameObject.SetActive(false);
+        }
     }
 
     void OnTriggerExit2D(Collider2D o)
     {
-        thisRender.color = Color.white;
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 
     // Update is called once per frame
-    void Update()
+    void PlayerFixedUpdate()
     {
         mainTimer+=Time.deltaTime;
+
+        momentum = Vector2.zero;
         
         PlayerMovement();
         if (Input.GetKey(KeyCode.Space))
             ShootBullet();
         LimitBoundary(); //플레이어 움직임 제한
-
+        
         this.transform.position = targetPos;
-
-        momentum=(targetPos - lastPos)*50.0f;
-        lastPos = targetPos;
     }
 
     void PlayerMovement()
     {
         if (Input.GetKey(KeyCode.W))
         {
-            targetPos += Vector2.up * speed * Time.deltaTime;
+            momentum += Vector2.up * speed;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            targetPos += Vector2.left * speed * Time.deltaTime;
+            momentum += Vector2.left * speed;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            targetPos += Vector2.down * speed * Time.deltaTime;
+            momentum += Vector2.down * speed;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            targetPos += Vector2.right * speed * Time.deltaTime;
+            momentum += Vector2.right * speed;
         }
+        targetPos += momentum * Time.fixedDeltaTime;
     }
 
     void ShootBullet()
@@ -105,8 +103,7 @@ public class player : MonoBehaviour
             
             GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet_player",spawnpos);
             bullet p_bullet = t_bullet.GetComponent<bullet>();
-            p_bullet.Setup(new Vector3(0+momentum.x,1.0f+momentum.y,0),4.0f,"Enemy");
-            //p_bullet.momentum = new Vector3(0,-5.0f,0);
+            p_bullet.velocity = new Vector3(momentum.x,momentum.y,0) + p_bullet.getStaticVelocity();
         }
     }
 

@@ -4,72 +4,78 @@ using UnityEngine;
 
 public class bullet : MonoBehaviour
 {
-
-    private Transform start_transform;
-
-    public Vector3 velocity;
-    public Vector3 momentum;
+    
+    public Vector3 velocity = Vector3.zero;
+    private Vector3 s_velocity;
     public float destroyTime = 1.0f;
+    private float s_destroyTime;
+    public string target = "";
+    private string s_target;
+
     private float mainTimer = 0.0f;
 
+    void Awake()
+    {
+       s_velocity = velocity;
+       s_destroyTime = destroyTime;
+       s_target = target;
 
-    public float sin_rate = 0.0f;
-    public float sin_size = 0.0f;
+       Debug.Log(s_velocity+"\n"+s_destroyTime+"\n"+s_target);
+    }
 
-    public string target = "";
-
-    // Start is called before the first frame update
+    
     void OnEnable()
     {
-        //init
-        start_transform = this.transform;
-        Setup(new Vector3(0,0,0), 1.0f, "");
-        SetSinValue(0.0f,0.0f);
-        
-        //start update coroutine
+        Setup(s_velocity, s_destroyTime, s_target);
+
         InvokeRepeating("BulletFixedUpdate",0,0.01f);
     }
     void OnDisable()
     {
         //TODO:여기 사라지기전 모션 추가
-
         ObjectPooler.ReturnToPool(gameObject);
         CancelInvoke();    // Monobehaviour에 Invoke가 있다면
     }
 
-    public void Setup(Vector3 _velo, float _destroyTime, string _target)
+    public void Setup(Vector3 v, float dt, string t)
     {
         mainTimer = 0.0f;
 
-        velocity = _velo;
-        destroyTime = _destroyTime;
-
-        target = _target;
-    }
-
-    public void SetSinValue(float s_rate, float s_size)
-    {
-        sin_rate = s_rate;
-        sin_size = s_size;
+        velocity = v;
+        destroyTime = dt;
+        target = t;
     }
 
     void BulletFixedUpdate()
     {
         mainTimer += Time.deltaTime;
-
-        if(mainTimer >= destroyTime)
+        
+        if((mainTimer >= destroyTime) && (destroyTime != 0))
         {
             gameObject.SetActive(false);
         }
 
+        //카메라 경계 밖으로 나가면 컬링
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
         if(!GeometryUtility.TestPlanesAABB(planes,this.GetComponent<CircleCollider2D>().bounds))
         {
             gameObject.SetActive(false);
         }
 
-        velocity += momentum * Time.deltaTime;
-        this.transform.Translate(velocity*Time.fixedDeltaTime);
-        //this.transform.eulerAngles = start_transform.eulerAngles + new Vector3(0, 0, mainTimer);
+        this.transform.transform.Translate(velocity*Time.fixedDeltaTime);
     }
+
+    public Vector3 getStaticVelocity()
+    {
+        return velocity;
+    }
+    public float getStaticDestroyTime()
+    {
+        return destroyTime;
+    }
+    public string getStaticTarget()
+    {
+        return target;
+    }
+    
 }
