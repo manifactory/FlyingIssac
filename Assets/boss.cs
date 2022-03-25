@@ -15,7 +15,6 @@ public class boss : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D o)
     {
-        //GetComponent는 클래스내 변수에 할당해서 자원 소비를 줄여야 되는데 편의상 패스
         if(o.GetComponent<bullet>().target == "Enemy")
         {
             GetComponent<SpriteRenderer>().color = Color.red;
@@ -36,10 +35,8 @@ public class boss : MonoBehaviour
             float init_angle = mainTimer*50.0f;
             for(float i=-2; i<=2; i+=0.1f)
             {
-                GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet_enemy"
-                ,this.transform.position
-                ,Quaternion.Euler(new Vector3(0,0,init_angle+180.0f*i)));
-                bullet p_bullet = t_bullet.GetComponent<bullet>();
+                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+                .ShootBullet("bullet_enemy", this.transform.position, degree: init_angle+180.0f*i);
             }
             yield return new WaitForSeconds(0.5f);
         }

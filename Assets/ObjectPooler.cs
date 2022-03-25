@@ -96,6 +96,11 @@ public class ObjectPooler : MonoBehaviour
 		if (!inst.poolDictionary.ContainsKey(obj.name))
 			throw new Exception($"Pool with tag {obj.name} doesn't exist.");
 
+		if(obj.transform.childCount != 0)
+		{
+			for(int i=0;i<obj.transform.childCount;i++)
+				obj.transform.GetChild(i).gameObject.SetActive(false);
+		}
 		inst.poolDictionary[obj.name].Enqueue(obj);
 	}
 
@@ -128,6 +133,11 @@ public class ObjectPooler : MonoBehaviour
 		objectToSpawn.transform.position = position;
 		objectToSpawn.transform.rotation = rotation;
 		objectToSpawn.SetActive(true);
+		if(objectToSpawn.transform.childCount != 0)
+		{
+			for(int i=0;i<objectToSpawn.transform.childCount;i++)
+				objectToSpawn.transform.GetChild(i).gameObject.SetActive(true);
+		}
 
 		return objectToSpawn;
 	}

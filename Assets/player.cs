@@ -44,7 +44,6 @@ public class player : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D o)
     {
-        //GetComponent는 클래스내 변수에 할당해서 자원 소비를 줄여야 되는데 편의상 패스
         if(o.GetComponent<bullet>().target == "Player")
         {
             GetComponent<SpriteRenderer>().color = Color.red;
@@ -67,7 +66,7 @@ public class player : MonoBehaviour
         PlayerMovement();
         if (Input.GetKey(KeyCode.Space))
             ShootBullet();
-        LimitBoundary(); //플레이어 움직임 제한
+        LimitBoundary();
         
         this.transform.position = targetPos;
     }
@@ -101,9 +100,8 @@ public class player : MonoBehaviour
             Vector2 spawnpos =  this.transform.position + Vector3.up*SD + Vector3.left*(IPD/2) - Vector3.left*wrinkleLeft;
             wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
             
-            GameObject t_bullet = ObjectPooler.SpawnFromPool("bullet_player",spawnpos);
-            bullet p_bullet = t_bullet.GetComponent<bullet>();
-            p_bullet.velocity = new Vector3(momentum.x,momentum.y,0) + p_bullet.getStaticVelocity();
+            GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+            .ShootBullet("bullet_player", spawnpos, addvelo: new Vector3(momentum.x,momentum.y,0));
         }
     }
 

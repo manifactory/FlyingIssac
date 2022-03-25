@@ -19,17 +19,14 @@ public class bullet : MonoBehaviour
        s_velocity = velocity;
        s_destroyTime = destroyTime;
        s_target = target;
-
-       Debug.Log(s_velocity+"\n"+s_destroyTime+"\n"+s_target);
     }
-
     
     void OnEnable()
     {
         Setup(s_velocity, s_destroyTime, s_target);
-
         InvokeRepeating("BulletFixedUpdate",0,0.01f);
     }
+
     void OnDisable()
     {
         //TODO:여기 사라지기전 모션 추가
@@ -48,7 +45,7 @@ public class bullet : MonoBehaviour
 
     void BulletFixedUpdate()
     {
-        mainTimer += Time.deltaTime;
+        mainTimer += Time.fixedDeltaTime;
         
         if((mainTimer >= destroyTime) && (destroyTime != 0))
         {
