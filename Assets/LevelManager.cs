@@ -24,6 +24,7 @@ public class LevelManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
+            //맵 배경을 바꿉니다.
             GameObject.Find("MapGrid").GetComponent<MapManager>().SetMap("Basement");
         }
         if(Input.GetKeyDown(KeyCode.Alpha2))
