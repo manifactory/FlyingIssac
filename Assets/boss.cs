@@ -17,7 +17,7 @@ public class boss : MonoBehaviour
     {
         if(o.GetComponent<bullet>().target == "Enemy")
         {
-            GetComponent<SpriteRenderer>().color = Color.red;
+            Invoke("GetDamage",0);
             o.gameObject.SetActive(false);
         }
     }
@@ -40,6 +40,17 @@ public class boss : MonoBehaviour
             }
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    void GetDamage()
+    {
+        GetComponent<SpriteRenderer>().color = Color.red;
+        Invoke("ColorReset",0.3f);
+    }
+
+    void ColorReset()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 
     // Update is called once per frame

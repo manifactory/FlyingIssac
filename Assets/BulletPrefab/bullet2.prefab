@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0.5, z: 0}
-  destroyTime: 10
+  destroyTime: 0
   target: Player
 --- !u!58 &7378541532101818648
 CircleCollider2D:
@@ -143,7 +143,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3335547018860005110, guid: cc0fb2fb3f03a6041bfa42c9c40dbafc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.15
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3335547018860005110, guid: cc0fb2fb3f03a6041bfa42c9c40dbafc, type: 3}
       propertyPath: m_LocalPosition.z

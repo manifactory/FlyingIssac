@@ -27,6 +27,8 @@ public class player : MonoBehaviour
 
     private Rect s_boundary;
 
+    public string Bullet_type = "bullet_player";
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,17 +46,27 @@ public class player : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D o)
     {
+        
+        switch(o.gameObject.tag)
+        {
+
+        case "Bullet":
         if(o.GetComponent<bullet>().target == "Player")
         {
-            GetComponent<SpriteRenderer>().color = Color.red;
+            Invoke("GetDamage",0);
             o.gameObject.SetActive(false);
+        }
+        break;
+
+        case "item":
+        
+        break;
+
+        default:
+        break;
         }
     }
 
-    void OnTriggerExit2D(Collider2D o)
-    {
-        GetComponent<SpriteRenderer>().color = Color.white;
-    }
 
     // Update is called once per frame
     void PlayerFixedUpdate()
@@ -69,6 +81,11 @@ public class player : MonoBehaviour
         LimitBoundary();
         
         this.transform.position = targetPos;
+    }
+
+    void GetItem(string item_type)
+    {
+
     }
 
     void PlayerMovement()
@@ -91,6 +108,11 @@ public class player : MonoBehaviour
         }
         targetPos += momentum * Time.fixedDeltaTime;
     }
+    void LimitBoundary()
+    {
+        targetPos.x = Mathf.Clamp(targetPos.x,s_boundary.xMin, s_boundary.xMax);
+        targetPos.y = Mathf.Clamp(targetPos.y,s_boundary.yMin, s_boundary.yMax);
+    }
 
     void ShootBullet()
     {    
@@ -105,10 +127,15 @@ public class player : MonoBehaviour
         }
     }
 
-    void LimitBoundary()
+    void GetDamage()
     {
-        targetPos.x = Mathf.Clamp(targetPos.x,s_boundary.xMin, s_boundary.xMax);
-        targetPos.y = Mathf.Clamp(targetPos.y,s_boundary.yMin, s_boundary.yMax);
+        GetComponent<SpriteRenderer>().color = Color.red;
+        Invoke("ColorReset",0.3f);
+    }
+
+    void ColorReset()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 
     void FixedUpdate()
