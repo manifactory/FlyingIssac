@@ -10,11 +10,11 @@ public class MapManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(transform.childCount);
+        //Debug.Log(transform.childCount);
         for(int i=0; i<transform.childCount; i++)
         {
             Transform t_child = transform.GetChild(i);
-            Debug.Log(t_child.name);
+            //Debug.Log(t_child.name);
             TileMapList.Add(t_child.name,t_child.transform);
             t_child.gameObject.SetActive(false);
         }

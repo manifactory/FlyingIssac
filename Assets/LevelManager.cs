@@ -4,10 +4,19 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+    private Rect s_boundary;
     // Start is called before the first frame update
     void Start()
     {
-        
+        s_boundary.xMin = GameObject.Find("TopLeft").transform.position.x;
+        s_boundary.xMax = GameObject.Find("BottomRight").transform.position.x;
+        s_boundary.yMin = GameObject.Find("BottomRight").transform.position.y;
+        s_boundary.yMax = GameObject.Find("TopLeft").transform.position.y;
+    }
+
+    public Rect GetStageBoundary()
+    {
+        return s_boundary;
     }
 
     // Update is called once per frame

@@ -36,10 +36,7 @@ public class player : MonoBehaviour
         movePos = targetPos;
 
         //플레이어 움직임 경계 설정
-        s_boundary.xMin = GameObject.Find("TopLeft").transform.position.x;
-        s_boundary.xMax = GameObject.Find("BottomRight").transform.position.x;
-        s_boundary.yMin = GameObject.Find("BottomRight").transform.position.y;
-        s_boundary.yMax = GameObject.Find("TopLeft").transform.position.y;
+        s_boundary = GameObject.Find("LevelManager").GetComponent<LevelManager>().GetStageBoundary();
 
         InvokeRepeating("PlayerFixedUpdate",0,0.01f);
     }

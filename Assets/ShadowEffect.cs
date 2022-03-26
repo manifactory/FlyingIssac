@@ -38,25 +38,27 @@ public class ShadowEffect : MonoBehaviour
         this.transform.localPosition = new Vector3(0,-height,0)+s_position;
     }
 
-    public void StartAnimation(string anmationName)//내가 생각해도 멍청한 함수다.
-    {
-        InvokeRepeating(anmationName,0.01f,0.01f);
-    }
+    //(Deprecated)
+    //
+    // public void StartAnimation(string anmationName)//내가 생각해도 멍청한 함수다.
+    // {
+    //     InvokeRepeating(anmationName,0.01f,0.01f);
+    // }
 
-    void IncreaseAnimation()
-    {
-        //Debug.Log(height);
-        if(height == m_height)
-            CancelInvoke("IncreaseAnimation");
-        else
-            height = Mathf.Lerp(height,m_height,Time.fixedDeltaTime*transitionSpeed);
-    }
+    // void IncreaseAnimation()
+    // {
+    //     //Debug.Log(height);
+    //     if(height == m_height)
+    //         CancelInvoke("IncreaseAnimation");
+    //     else
+    //         height = Mathf.Lerp(height,m_height,Time.fixedDeltaTime*transitionSpeed);
+    // }
 
-    void DecreaseAnimation()
-    {
-        if(height == s_height)
-            this.GetComponentInParent<GameObject>().SetActive(false);
-        else
-            height = Mathf.Lerp(height,s_height,Time.fixedDeltaTime*transitionSpeed);
-    }
+    // void DecreaseAnimation()
+    // {
+    //     if(height == s_height)
+    //         this.GetComponentInParent<GameObject>().SetActive(false);
+    //     else
+    //         height = Mathf.Lerp(height,s_height,Time.fixedDeltaTime*transitionSpeed);
+    // }
 }
