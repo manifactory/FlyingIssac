@@ -29,7 +29,9 @@ public class player : MonoBehaviour
 
     private Rect s_boundary;
 
-    public string Bullet_type = "bullet_player";
+
+    public float HP = 3.0f;
+    private float s_HP = 0.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -53,8 +55,8 @@ public class player : MonoBehaviour
         case "Bullet":
         if(o.GetComponent<bullet>().target == "Player")
         {
-            Invoke("GetDamage",0);
             o.gameObject.SetActive(false);
+            StartCoroutine(GetDamage(1));
         }
         break;
 
@@ -136,16 +138,31 @@ public class player : MonoBehaviour
         }
     }
 
-    void GetDamage()
+    IEnumerator GetDamage(int damage)
     {
+        //넉백
+        //this.transform.position += Vector3.up * damage * 0.1f;
 
-        GetComponent<SpriteRenderer>().color = Color.red;
-        Invoke("ColorReset",0.3f);
+        HP -= damage;
+        if(HP<=0.0f)
+        {
+            // 종료 로직
+        }
+        SetColorAndReset(Color.red, 0.3f);
+
+        return null;
     }
 
-    void ColorReset()
+    IEnumerator ColorReset()
     {
         GetComponent<SpriteRenderer>().color = Color.white;
+        return null;
+    }
+
+    void SetColorAndReset(Color c,float resetDelay)
+    {
+        GetComponent<SpriteRenderer>().color = c;
+        Invoke("ColorReset",resetDelay);
     }
 
     void FixedUpdate()

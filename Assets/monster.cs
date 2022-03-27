@@ -35,6 +35,7 @@ public class monster : MonoBehaviour
 
     void OnDisable()
     {
+        GameObject.Find("LevelManager").GetComponent<LevelManager>().mob_count_decrease();
         CancelInvoke();
     }
 
