@@ -10,9 +10,7 @@ public class ShootBulletWraper : MonoBehaviour
         bullet p_bullet = t_bullet.GetComponent<bullet>();
         if(velo != null)
         {
-            Debug.Log(degree);
             velo = Quaternion.Euler(0, 0, degree) * velo;
-            Debug.Log(velo);
             p_bullet.velocity = (Vector3)velo;
         }
         else if(addvelo != null)

@@ -78,8 +78,8 @@ public class monster : MonoBehaviour
 
 //여기서 몬스터의 움직임을 구현하면 됩니다.
 //(해당 몬스터 게임오브젝트의 tag)+Update로 함수명을 지정하세요.
-//함수내부에 PosUpdate()를 넣는 것을 권장합니다
-
+//함수 내부에 PosUpdate()는 마지막에 필수로 넣어야 합니다.
+ 
     //파리
     void FlyUpdate()
     {
@@ -114,10 +114,8 @@ public class monster : MonoBehaviour
             localTimer = 0.0f;
 
             float shootAngle = GetAngle(this.transform.position, GameObject.Find("Player").transform.position);
-            Debug.Log(shootAngle);
             GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
             .ShootBullet("bullet_enemy", this.transform.position, degree: shootAngle - 90.0f, velo: new Vector3(0,1.0f,0));
-            Debug.Log(shootAngle);
         }
         PosUpdate();
     }
@@ -132,32 +130,33 @@ public class monster : MonoBehaviour
         {
             Debug.Log("Shoot");
             localTimer = 0.0f;
-            StartCoroutine(shotgun());
+            CancelInvoke();
+
+            InvokeRepeating("shotgun",0.0f,0.5f);
         }
         PosUpdate();
     }
 
-    IEnumerator shotgun()
+    void shotgun()
     {
-        
-        int shoot_count=3;
-
-        if(localTimer >= 0.5f)
+        float init_angle = localTimer*100.0f;
+        for(float i=-1; i<=1; i+=0.1f)
         {
-            localTimer = 0.0f;
-
-            float init_angle = localTimer*100.0f;
-            for(float i=-1; i<=1; i+=0.1f)
-            {
-                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
-                .ShootBullet("bullet_enemy", this.transform.position, degree: init_angle+180.0f*i);
-            }
-
-            shoot_count--;  
+            GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+            .ShootBullet("bullet_enemy", this.transform.position, degree: init_angle+180.0f*i);
         }
         
+        // int shoot_count=3;
 
-        return null;
+        // if(localTimer >= 0.5f)
+        // {
+        //     localTimer = 0.0f;
+
+            
+
+        //     shoot_count--;  
+        // }
+        
     }
 
     void PosUpdate()

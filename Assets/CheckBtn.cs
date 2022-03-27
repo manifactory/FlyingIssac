@@ -12,5 +12,10 @@ public class CheckBtn : MonoBehaviour
         {
             LoadingSceneManager.LoadScene("PlayScene");
         }
+
+        if(Input.GetKeyDown(KeyCode.F11))
+        {
+            Screen.fullScreen = !Screen.fullScreen;
+        }
     }
 }
