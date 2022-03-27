@@ -52,7 +52,7 @@ public class bullet : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-        //카메라 경계 밖으로 나가면 컬링
+        //카메라 바깥으로 나가면 비활성화
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
         if(!GeometryUtility.TestPlanesAABB(planes,this.GetComponent<CircleCollider2D>().bounds))
         {

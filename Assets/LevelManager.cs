@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+
+    private string[] Stage_order = new string[3]{"Basement","Cellar","Caves"};
+    private List<GameObject> Mob_List = new List<GameObject>();
     private Rect s_boundary;
     // Start is called before the first frame update
     void Start()
@@ -19,21 +22,13 @@ public class LevelManager : MonoBehaviour
         return s_boundary;
     }
 
-    // Update is called once per frame
-    void Update()
+    void LevelLoad(int stage_num)
     {
-        if(Input.GetKeyDown(KeyCode.Alpha1))
+        int mob_count = GameObject.Find("Level_"+stage_num).transform.childCount;
+        for(int i=0;i<mob_count;i++)
         {
-            //맵 배경을 바꿉니다.
-            GameObject.Find("MapGrid").GetComponent<MapManager>().SetMap("Basement");
+            
         }
-        if(Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            GameObject.Find("MapGrid").GetComponent<MapManager>().SetMap("Caves");
-        }
-        if(Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            GameObject.Find("MapGrid").GetComponent<MapManager>().SetMap("Cellar");
-        }
+        
     }
 }

@@ -8,14 +8,14 @@ public class ShootBulletWraper : MonoBehaviour
     {
         GameObject t_bullet = ObjectPooler.SpawnFromPool(tag,pos);
         bullet p_bullet = t_bullet.GetComponent<bullet>();
-        if(velo.HasValue)
+        if(velo != null)
         {
             Debug.Log(degree);
             velo = Quaternion.Euler(0, 0, degree) * velo;
             Debug.Log(velo);
             p_bullet.velocity = (Vector3)velo;
         }
-        else if(addvelo.HasValue)
+        else if(addvelo != null)
         {
             addvelo += p_bullet.getStaticVelocity();
             addvelo = Quaternion.Euler(0, 0, degree) * addvelo;

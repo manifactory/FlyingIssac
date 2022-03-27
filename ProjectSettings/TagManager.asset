@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Obstacle
   - Bullet
+  - Monster
+  - Level_Preset
+  - Fly
+  - Blob
+  - Baby
   layers:
   - Default
   - TransparentFX

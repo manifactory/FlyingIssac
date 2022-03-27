@@ -7,10 +7,14 @@ public class boss : MonoBehaviour
     float mainTimer = 0.0f;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         InvokeRepeating("shotgun",0.0f,0.5f);
-        StartCoroutine(shotgun());
+    }
+
+    void OnDisable()
+    {
+        CancelInvoke();
     }
 
     void OnTriggerEnter2D(Collider2D o)
@@ -27,18 +31,13 @@ public class boss : MonoBehaviour
         GetComponent<SpriteRenderer>().color = Color.white;
     }
 
-    IEnumerator shotgun()
+    void shotgun()
     {
-        yield return new WaitForSeconds(0.5f);
-        while(true)
+        float init_angle = mainTimer*50.0f;
+        for(float i=-1; i<=1; i+=0.1f)
         {
-            float init_angle = mainTimer*50.0f;
-            for(float i=-2; i<=2; i+=0.1f)
-            {
-                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
-                .ShootBullet("bullet_enemy", this.transform.position, degree: init_angle+180.0f*i);
-            }
-            yield return new WaitForSeconds(0.5f);
+            GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+            .ShootBullet("bullet_enemy", this.transform.position, degree: init_angle+180.0f*i);
         }
     }
 

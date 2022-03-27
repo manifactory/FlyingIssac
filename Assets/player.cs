@@ -7,6 +7,8 @@ public class player : MonoBehaviour
 
     [Header("movement value")]
     public float speed;
+
+    private float s_speed = 0.0f;
     public float smoothValue;
 
     [SerializeField]
@@ -34,6 +36,7 @@ public class player : MonoBehaviour
     {
         targetPos = this.transform.position;
         movePos = targetPos;
+        s_speed = speed;
 
         //플레이어 움직임 경계 설정
         s_boundary = GameObject.Find("LevelManager").GetComponent<LevelManager>().GetStageBoundary();
@@ -103,6 +106,15 @@ public class player : MonoBehaviour
         {
             momentum += Vector2.right * speed;
         }
+
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = s_speed/2.0f;
+        }
+        else
+        {
+            speed = s_speed;
+        }
         targetPos += momentum * Time.fixedDeltaTime;
     }
     void LimitBoundary()
@@ -126,6 +138,7 @@ public class player : MonoBehaviour
 
     void GetDamage()
     {
+
         GetComponent<SpriteRenderer>().color = Color.red;
         Invoke("ColorReset",0.3f);
     }
