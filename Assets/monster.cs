@@ -15,19 +15,22 @@ public class monster : MonoBehaviour
 
     private float localTimer = 0.0f;
 
-    
+    public float HP = 5.0f;
+    private float s_HP = 0.0f;
 
     void Awake()
     {
-        Debug.Log(this.gameObject.transform);
         s_position = this.transform.position;
         s_rotation = this.transform.rotation;
+        s_HP = HP;
     }
 
     void OnEnable()
     {
         this.transform.SetPositionAndRotation(s_position, s_rotation);
         InvokeRepeating(this.gameObject.tag+"Update",0.01f,0.01f);
+        localTimer = 0.0f;
+        HP = s_HP;
     }
 
     void OnDisable()
@@ -40,19 +43,30 @@ public class monster : MonoBehaviour
         if(o.tag == "Bullet")
             if(o.GetComponent<bullet>().target == "Enemy")
             {
-                Invoke("GetDamage",0);
                 o.gameObject.SetActive(false);
+                StartCoroutine(GetDamage(1));
             }
     }
 
-    void GetDamage()
+    IEnumerator GetDamage(int damage)
     {
+        //넉백
+        //this.transform.position += Vector3.up * damage * 0.1f;
+
+        HP -= damage;
+        if(HP<=0.0f)
+        {
+            this.gameObject.SetActive(false);
+        }
         SetColorAndReset(Color.red, 0.3f);
+
+        return null;
     }
 
-    void ColorReset()
+    IEnumerator ColorReset()
     {
         GetComponent<SpriteRenderer>().color = Color.white;
+        return null;
     }
 
 
@@ -66,11 +80,14 @@ public class monster : MonoBehaviour
 //(해당 몬스터 게임오브젝트의 tag)+Update로 함수명을 지정하세요.
 //함수내부에 PosUpdate()를 넣는 것을 권장합니다
 
+    //파리
     void FlyUpdate()
     {
+        localTimer += Time.deltaTime;
         PosUpdate();
     }
 
+    //아이작 대가리
     void BlobUpdate()
     {
         localTimer += Time.deltaTime;
@@ -88,6 +105,7 @@ public class monster : MonoBehaviour
         PosUpdate();
     }
 
+    //애기
     void BabyUpdate()
     {
         localTimer += Time.deltaTime;
@@ -95,14 +113,51 @@ public class monster : MonoBehaviour
         {
             localTimer = 0.0f;
 
-            float shootAngle = Vector2.SignedAngle(this.transform.position, GameObject.Find("Player").transform.position);
+            float shootAngle = GetAngle(this.transform.position, GameObject.Find("Player").transform.position);
             Debug.Log(shootAngle);
-            shootAngle *= Mathf.Rad2Deg;
             GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
-            .ShootBullet("bullet_enemy", this.transform.position, degree: shootAngle + 90.0f, velo: new Vector3(0,3.0f,0));
+            .ShootBullet("bullet_enemy", this.transform.position, degree: shootAngle - 90.0f, velo: new Vector3(0,1.0f,0));
             Debug.Log(shootAngle);
         }
         PosUpdate();
+    }
+
+    //몬스트로(보스)
+    void MonstroUpdate()
+    {
+        localTimer += Time.deltaTime;
+        Debug.Log(localTimer);
+
+        if(localTimer >= shootInterval)
+        {
+            Debug.Log("Shoot");
+            localTimer = 0.0f;
+            StartCoroutine(shotgun());
+        }
+        PosUpdate();
+    }
+
+    IEnumerator shotgun()
+    {
+        
+        int shoot_count=3;
+
+        if(localTimer >= 0.5f)
+        {
+            localTimer = 0.0f;
+
+            float init_angle = localTimer*100.0f;
+            for(float i=-1; i<=1; i+=0.1f)
+            {
+                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+                .ShootBullet("bullet_enemy", this.transform.position, degree: init_angle+180.0f*i);
+            }
+
+            shoot_count--;  
+        }
+        
+
+        return null;
     }
 
     void PosUpdate()
@@ -115,5 +170,11 @@ public class monster : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+
+    public static float GetAngle(Vector3 from, Vector3 to)
+    {
+        Vector3 gap = to - from;
+        return Mathf.Atan2(gap.y, gap.x) * Mathf.Rad2Deg;
     }
 }
