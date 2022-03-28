@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -10,10 +12,15 @@ public class LevelManager : MonoBehaviour
     private string[] Stage_order = new string[10];
     
     private int Level_count = 0;
-    private int[] Level_mob_count = new int[100];
+    private int[] Level_entity_count = new int[100];
     private int current_level = 0;
 
+    private int Score = 0;
+    private int HighScore = 0;
+
     private Rect s_boundary;
+
+    private int[] s_Level_entity_count = new int[100];
     // Start is called before the first frame update
     void Start()
     {
@@ -32,19 +39,46 @@ public class LevelManager : MonoBehaviour
         Level_count = GameObject.Find("Levels").transform.childCount;
         for(int i=0;i<Level_count;i++)
         {
-            Level_mob_count[i] = GameObject.Find("Levels").transform.GetChild(i).transform.childCount;
+            Level_entity_count[i] = GameObject.Find("Levels").transform.GetChild(i).transform.childCount;
         }
-        Debug.Log(Level_mob_count);
+        Debug.Log(Level_entity_count);
+        Array.Copy(Level_entity_count,s_Level_entity_count, 100);
+        
 
         InvokeRepeating("LevelManagerUpdate",0.01f,0.01f);
     }
 
     void LevelManagerUpdate()
     {
-        if(Level_mob_count[current_level] <= 0)
+        if(Level_entity_count[current_level] == 1)
+        {
+            if(s_Level_entity_count[current_level]-1 != 0)
+                GameObject.Find("Levels")
+                    .transform.GetChild(current_level)
+                    .transform.GetChild(s_Level_entity_count[current_level]-1)
+                    .gameObject.SetActive(true);
+        }
+        if(Level_entity_count[current_level] <= 0)
         {
             LoadNextStage();
         }
+    }
+
+    public void AddScore(int s)
+    {
+        Score += s;
+        Score = Score <= 0 ? 0 : Score;
+        GameObject.Find("Canvas").GetComponent<UI_System>().SetNumberElement("Score", Score);
+        if(HighScore<Score)
+        {
+            HighScore = Score;
+            GameObject.Find("Canvas").GetComponent<UI_System>().SetNumberElement("HiScore", HighScore);
+        }
+    }
+
+    void OnDisable()
+    {
+        CancelInvoke();
     }
 
     public Rect GetStageBoundary()
@@ -59,6 +93,8 @@ public class LevelManager : MonoBehaviour
             if(current_level >= Level_count)
             {
                 Debug.Log("LevelClear");
+                GameObject.Find("Canvas").transform.Find("LevelClear").GetComponent<Text>().color = new Color(1,1,1,0.5f);
+                CancelInvoke();
                 return;
             }
             else
@@ -82,11 +118,25 @@ public class LevelManager : MonoBehaviour
             if((current_level >= Level_count))
             {
                 Debug.Log("LevelClear");
+                GameObject.Find("Canvas").transform.Find("LevelClear").GetComponent<Text>().color = new Color(1,1,1,0.5f);
+                CancelInvoke();
                 return;
             }
             else
             {
                 SetLevelActive(current_level, true);
+                //아이템 엔티티 비활성화
+                if(s_Level_entity_count[current_level]-1 != 0)
+                {
+                    GameObject.Find("Levels")
+                        .transform.GetChild(current_level)
+                        .transform.GetChild(s_Level_entity_count[current_level]-1)
+                        .gameObject.SetActive(false);
+                    //아이템 비활성화시 카운트 감소로 인한 보정
+                    Level_entity_count[current_level]++;
+                }
+                //플레이어 위치 설정
+                GameObject.Find("Player").GetComponent<player>().targetPos = new Vector3(0,-3.15f,0);
 
                 GameObject.Find("MapGrid")
                     .GetComponent<MapManager>().SetMap(Stage_order[current_level]);
@@ -100,7 +150,7 @@ public class LevelManager : MonoBehaviour
             .transform.GetChild(lv_num)
             .gameObject.SetActive(active);
         
-        for(int i=0;i<Level_mob_count[lv_num];i++)
+        for(int i=0;i<Level_entity_count[lv_num];i++)
         {
             GameObject.Find("Levels")
                 .transform.GetChild(lv_num)
@@ -111,9 +161,9 @@ public class LevelManager : MonoBehaviour
 
     public bool mob_count_decrease()
     {
-        Level_mob_count[current_level]--;
-        Debug.Log(Level_mob_count[current_level]);
-        return Level_mob_count[current_level] <= 0;
+        Level_entity_count[current_level]--;
+        Debug.Log(Level_entity_count[current_level]);
+        return Level_entity_count[current_level] <= 0;
     }
 
 }

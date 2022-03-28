@@ -11,8 +11,7 @@ public class player : MonoBehaviour
     private float s_speed = 0.0f;
     public float smoothValue;
 
-    [SerializeField]
-    private Vector2 targetPos = Vector2.zero;
+    public Vector2 targetPos = Vector2.zero;
     private Vector2 movePos = Vector2.zero;
     private Vector2 lastPos = Vector2.zero;
     private Vector2 momentum = Vector2.zero;
@@ -32,6 +31,9 @@ public class player : MonoBehaviour
 
     public float HP = 3.0f;
     private float s_HP = 0.0f;
+
+    public string bullet_type = "bullet_player";
+    private bool three_eye = false;
 
     // Start is called before the first frame update
     void Start()
@@ -56,12 +58,15 @@ public class player : MonoBehaviour
         if(o.GetComponent<bullet>().target == "Player")
         {
             o.gameObject.SetActive(false);
+            Debug.Log("get damage");
             StartCoroutine(GetDamage(1));
         }
         break;
 
-        case "item":
-        
+        case "Item":
+        Debug.Log("get item");
+        GetItem(o.gameObject.name);
+        o.gameObject.SetActive(false);
         break;
 
         default:
@@ -87,7 +92,23 @@ public class player : MonoBehaviour
 
     void GetItem(string item_type)
     {
-
+        switch(item_type)
+        {
+            case "Arrow":
+                bullet_type = "bullet_pierce";
+                GameObject.Find("Canvas").GetComponent<UI_System>()
+                .SetImageVisible("Itemslot_1",1);
+                break;
+            
+            case "Eye":
+                three_eye = true;
+                GameObject.Find("Canvas").GetComponent<UI_System>()
+                .SetImageVisible("Itemslot_2",1);
+                break;
+            
+            default:
+                break;
+        }
     }
 
     void PlayerMovement()
@@ -119,7 +140,7 @@ public class player : MonoBehaviour
         }
         targetPos += momentum * Time.fixedDeltaTime;
     }
-    void LimitBoundary()
+    void LimitBoundary() 
     {
         targetPos.x = Mathf.Clamp(targetPos.x,s_boundary.xMin, s_boundary.xMax);
         targetPos.y = Mathf.Clamp(targetPos.y,s_boundary.yMin, s_boundary.yMax);
@@ -129,12 +150,30 @@ public class player : MonoBehaviour
     {    
         if(mainTimer-shootTimer>=shootInterval){
             shootTimer = mainTimer;
-            
-            Vector2 spawnpos =  this.transform.position + Vector3.up*SD + Vector3.left*(IPD/2) - Vector3.left*wrinkleLeft;
-            wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
-            
+            if(three_eye)
+            {
+                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+            .ShootBullet(bullet_type, this.transform.position + Vector3.up*SD + Vector3.left * 0.2f, velo: new Vector3(momentum.x,momentum.y+5.0f,0));
+                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+            .ShootBullet(bullet_type, this.transform.position + Vector3.up*SD + Vector3.right * 0.2f, velo: new Vector3(momentum.x,momentum.y+5.0f,0));
             GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
-            .ShootBullet("bullet_player", spawnpos, addvelo: new Vector3(momentum.x,momentum.y,0));
+            .ShootBullet(bullet_type, this.transform.position + Vector3.up*SD + Vector3.up * 0.2f, velo: new Vector3(momentum.x,momentum.y+5.0f,0));
+            }
+            else
+            {
+                Vector2 spawnpos =  this.transform.position + Vector3.up*SD + Vector3.left*(IPD/2) - Vector3.left*wrinkleLeft;
+                wrinkleLeft = wrinkleLeft==IPD ? 0.0f : IPD;
+
+                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+            .ShootBullet(bullet_type, spawnpos, velo: new Vector3(momentum.x,momentum.y+5.0f,0));
+                
+            }
+            
+            
+
+            
+            
+            
         }
     }
 
@@ -143,30 +182,48 @@ public class player : MonoBehaviour
         //넉백
         //this.transform.position += Vector3.up * damage * 0.1f;
 
-        HP -= damage;
-        if(HP<=0.0f)
-        {
-            // 종료 로직
-        }
-        else
-        {
-            StartCoroutine(SetColorAndReset(Color.red, 0.3f));
-        }
+        StartCoroutine(SetColorAndReset(Color.red, 0.3f));
 
+        // HP -= damage;
+        // if(HP<=0.0f)
+        // {
+        //     this.gameObject.SetActive(false);
+        // }
+        // else
+        // {
+        //     StartCoroutine(SetColorAndReset(Color.red, 0.3f));
+        // }
         yield return null;
     }
 
-    IEnumerator ColorReset(float delay)
+    IEnumerator SetChildColor(Color c)
+    {
+        //Debug.Log("setColor");
+        for(int i=0;i<this.transform.childCount;i++)
+        {
+            //Debug.Log(this.transform.GetChild(i).name);
+            SpriteRenderer s_renderer;
+            if(this.transform.GetChild(i).TryGetComponent<SpriteRenderer>(out s_renderer)
+                &&this.transform.GetChild(i).name != "Shadow")
+            {
+                s_renderer.color = c;
+            }
+        }
+        GetComponent<SpriteRenderer>().color = c;
+        yield return null;
+    }
+
+    IEnumerator ResetChildColor(float delay)
     {
         yield return new WaitForSeconds(delay);
-        GetComponent<SpriteRenderer>().color = Color.white;
+        StartCoroutine(SetChildColor(Color.white));
     }
 
 
     IEnumerator SetColorAndReset(Color c,float resetDelay)
     {
-        GetComponent<SpriteRenderer>().color = c;
-        StartCoroutine(ColorReset(resetDelay));
+        StartCoroutine(SetChildColor(c));
+        StartCoroutine(ResetChildColor(resetDelay));
         yield return null;
     }
 

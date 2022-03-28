@@ -12,6 +12,7 @@ TagManager:
   - Blob
   - Baby
   - Monstro
+  - Item
   layers:
   - Default
   - TransparentFX

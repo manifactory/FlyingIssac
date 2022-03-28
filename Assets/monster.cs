@@ -18,6 +18,10 @@ public class monster : MonoBehaviour
     public float HP = 5.0f;
     private float s_HP = 0.0f;
 
+    [Header("Score field")]
+    public int DeathScore = 1000;
+    public int HitScore = 50;
+
     void Awake()
     {
         s_position = this.transform.position;
@@ -36,6 +40,7 @@ public class monster : MonoBehaviour
     void OnDisable()
     {
         GameObject.Find("LevelManager").GetComponent<LevelManager>().mob_count_decrease();
+        GameObject.Find("LevelManager").GetComponent<LevelManager>().AddScore(DeathScore);
         CancelInvoke();
     }
 
@@ -44,7 +49,8 @@ public class monster : MonoBehaviour
         if(o.tag == "Bullet")
             if(o.GetComponent<bullet>().target == "Enemy")
             {
-                o.gameObject.SetActive(false);
+                if(o.gameObject.name != "bullet_pierce")
+                    o.gameObject.SetActive(false);
                 StartCoroutine(GetDamage(1));
             }
     }
@@ -53,7 +59,7 @@ public class monster : MonoBehaviour
     {
         //넉백
         //this.transform.position += Vector3.up * damage * 0.1f;
-
+        GameObject.Find("LevelManager").GetComponent<LevelManager>().AddScore(HitScore);
         HP -= damage;
         if(HP<=0.0f)
         {
@@ -102,7 +108,7 @@ public class monster : MonoBehaviour
             for(float i=-1; i<=1; i+=0.25f)
             {
                 GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
-                .ShootBullet("bullet_enemy", this.transform.position, degree: 180.0f*i);
+                .ShootBullet("bullet_enemy", this.transform.position, velo:new Vector3(0,2.0f,0),degree: 180.0f*i);
             }
         }
 
@@ -117,14 +123,15 @@ public class monster : MonoBehaviour
         {
             localTimer = 0.0f;
 
-            float shootAngle = GetAngle(this.transform.position, GameObject.Find("Player").transform.position);
+            float shootAngle = GetAngle(this.transform.position, GameObject.Find("Player").transform.position) - 90.0f;
             GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
-            .ShootBullet("bullet_enemy", this.transform.position, degree: shootAngle - 90.0f, velo: new Vector3(0,1.0f,0));
+            .ShootBullet("bullet_enemy", this.transform.position, degree: shootAngle, velo: new Vector3(0,1.0f,0));
         }
         PosUpdate();
     }
 
     //몬스트로(보스)
+    int shoot_count = 0;
     void MonstroUpdate()
     {
         localTimer += Time.deltaTime;
@@ -134,33 +141,49 @@ public class monster : MonoBehaviour
         {
             Debug.Log("Shoot");
             localTimer = 0.0f;
-            CancelInvoke("shotgun");
 
-            InvokeRepeating("shotgun",0.0f,0.5f);
+            StartCoroutine(shotgun());
+            shoot_count++;
         }
+
+        if((localTimer >= shootInterval/4.0f) && (shoot_count>=3))
+        {
+            shoot_count = 0;
+            for(int i=0; i<=Random.Range(3,6); i++)
+            {
+                float shootAngle = GetAngle(this.transform.position, GameObject.Find("Player").transform.position) - 90.0f;
+                GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
+                .ShootBullet("bullet_enemy", this.transform.position, degree: shootAngle + Random.Range(-15.0f,15.0f), velo: new Vector3(0,Random.Range(1.0f,2.0f),0));
+            }
+        }
+
         PosUpdate();
     }
 
-    void shotgun()
+    IEnumerator shotgun()
     {
-        float init_angle = localTimer*100.0f;
+        float shootAngle = GetAngle(this.transform.position, GameObject.Find("Player").transform.position) - 90.0f;
         for(float i=-1; i<=1; i+=0.1f)
         {
             GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
-            .ShootBullet("bullet_enemy", this.transform.position, degree: init_angle+180.0f*i);
+            .ShootBullet("bullet_enemy", this.transform.position, velo: new Vector3(0,3.0f,0), degree: shootAngle+180.0f*i);
         }
-        
-        // int shoot_count=3;
+        yield return null;
+    }
 
-        // if(localTimer >= 0.5f)
-        // {
-        //     localTimer = 0.0f;
+    IEnumerator RepidShot(int shoot_count, float repid_delay, IEnumerator pattern)
+    {
 
+        while(shoot_count > 0)
+        {
+            shoot_count--;
+
+            StartCoroutine(pattern);
             
+            yield return new WaitForSeconds(repid_delay);
+        }
 
-        //     shoot_count--;  
-        // }
-        
+        yield return null;
     }
 
     void PosUpdate()

@@ -19,11 +19,17 @@ public class UI_System : MonoBehaviour
     
     public void SetNumberElement(string name, int value)
     {
-        SetNamedTextElement(name, "number_element", ""+value);
+        string scroeText = value.ToString().PadLeft(10,'0');
+        SetNamedTextElement(name, "number_element", scroeText);
     }
 
     public void SetIndicatorElement(string name, int value)
     {
         
+    }
+
+    public void SetImageVisible(string name, float alpha)
+    {
+        GameObject.Find(name).transform.Find("Image").GetComponent<Image>().color = new Color(1,1,1,alpha);
     }
 }
