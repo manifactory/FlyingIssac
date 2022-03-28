@@ -148,21 +148,26 @@ public class player : MonoBehaviour
         {
             // 종료 로직
         }
-        SetColorAndReset(Color.red, 0.3f);
+        else
+        {
+            StartCoroutine(SetColorAndReset(Color.red, 0.3f));
+        }
 
-        return null;
+        yield return null;
     }
 
-    IEnumerator ColorReset()
+    IEnumerator ColorReset(float delay)
     {
+        yield return new WaitForSeconds(delay);
         GetComponent<SpriteRenderer>().color = Color.white;
-        return null;
     }
 
-    void SetColorAndReset(Color c,float resetDelay)
+
+    IEnumerator SetColorAndReset(Color c,float resetDelay)
     {
         GetComponent<SpriteRenderer>().color = c;
-        Invoke("ColorReset",resetDelay);
+        StartCoroutine(ColorReset(resetDelay));
+        yield return null;
     }
 
     void FixedUpdate()

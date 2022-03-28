@@ -59,22 +59,25 @@ public class monster : MonoBehaviour
         {
             this.gameObject.SetActive(false);
         }
-        SetColorAndReset(Color.red, 0.3f);
-
-        return null;
+        else
+        {
+            StartCoroutine(SetColorAndReset(Color.red, 0.3f));
+        }
+        yield return null;
     }
 
-    IEnumerator ColorReset()
+    IEnumerator ColorReset(float delay)
     {
+        yield return new WaitForSeconds(delay);
         GetComponent<SpriteRenderer>().color = Color.white;
-        return null;
     }
 
 
-    void SetColorAndReset(Color c,float resetDelay)
+    IEnumerator SetColorAndReset(Color c,float resetDelay)
     {
         GetComponent<SpriteRenderer>().color = c;
-        Invoke("ColorReset",resetDelay);
+        StartCoroutine(ColorReset(resetDelay));
+        yield return null;
     }
 
 //여기서 몬스터의 움직임을 구현하면 됩니다.
@@ -131,7 +134,7 @@ public class monster : MonoBehaviour
         {
             Debug.Log("Shoot");
             localTimer = 0.0f;
-            CancelInvoke();
+            CancelInvoke("shotgun");
 
             InvokeRepeating("shotgun",0.0f,0.5f);
         }

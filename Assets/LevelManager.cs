@@ -7,10 +7,11 @@ public class LevelManager : MonoBehaviour
 
     private int Map_count = 0;
 
+    private string[] Stage_order = new string[10];
     
     private int Level_count = 0;
     private int[] Level_mob_count = new int[100];
-    private int current_level = 1;
+    private int current_level = 0;
 
     private Rect s_boundary;
     // Start is called before the first frame update
@@ -22,12 +23,16 @@ public class LevelManager : MonoBehaviour
         s_boundary.yMax = GameObject.Find("TopLeft").transform.position.y;
 
         Map_count = GameObject.Find("MapGrid").transform.childCount;
+        for(int i=0;i<Map_count;i++)
+        {
+            Stage_order[i] = GameObject.Find("MapGrid").transform.GetChild(i).name;
+        }
+        Debug.Log(Stage_order);
 
         Level_count = GameObject.Find("Levels").transform.childCount;
-        Level_mob_count[0] = 0;
         for(int i=0;i<Level_count;i++)
         {
-            Level_mob_count[i+1] = GameObject.Find("Levels").transform.GetChild(i).transform.childCount;
+            Level_mob_count[i] = GameObject.Find("Levels").transform.GetChild(i).transform.childCount;
         }
         Debug.Log(Level_mob_count);
 
@@ -47,47 +52,68 @@ public class LevelManager : MonoBehaviour
         return s_boundary;
     }
 
-    void LevelLoad(int lv_num)
+    public void LoadNextStage()
     {
-        lv_num--;
+        if(!(current_level < 0))
+        {
+            if(current_level >= Level_count)
+            {
+                Debug.Log("LevelClear");
+                return;
+            }
+            else
+            {
+                SetLevelActive(current_level, false);
+                List<GameObject> bulletList = ObjectPooler.GetAllPools("bullet_player");
+                foreach(GameObject b in bulletList)
+                {
+                    b.SetActive(false);
+                }
+                bulletList = ObjectPooler.GetAllPools("bullet_enemy");
+                foreach(GameObject b in bulletList)
+                {
+                    b.SetActive(false);
+                }
+            }
+            
+            current_level++;
+            Debug.Log("currnet_level "+current_level);
 
+            if((current_level >= Level_count))
+            {
+                Debug.Log("LevelClear");
+                return;
+            }
+            else
+            {
+                SetLevelActive(current_level, true);
+
+                GameObject.Find("MapGrid")
+                    .GetComponent<MapManager>().SetMap(Stage_order[current_level]);
+            }
+        }
+    }
+
+    void SetLevelActive(int lv_num, bool active)
+    {
         GameObject.Find("Levels")
             .transform.GetChild(lv_num)
-            .gameObject.SetActive(true);
-
+            .gameObject.SetActive(active);
+        
         for(int i=0;i<Level_mob_count[lv_num];i++)
         {
             GameObject.Find("Levels")
                 .transform.GetChild(lv_num)
                 .transform.GetChild(i)
-                .gameObject.SetActive(true);
+                .gameObject.SetActive(active);
         }
-    }
-
-    public void LoadNextStage()
-    {
-        GameObject.Find("Levels")
-            .transform.GetChild(current_level)
-            .gameObject.SetActive(false);
-
-        GameObject.Find("MapGrid")
-            .transform.GetChild(current_level)
-            .gameObject.SetActive(false);
-        
-        current_level++;
-        Debug.Log("currnet_level "+current_level);
-        LevelLoad(current_level);
-
-        GameObject.Find("MapGrid")
-            .transform.GetChild(current_level)
-            .gameObject.SetActive(false);
     }
 
     public bool mob_count_decrease()
     {
         Level_mob_count[current_level]--;
         Debug.Log(Level_mob_count[current_level]);
-        return Level_mob_count[current_level-1] <= 0;
+        return Level_mob_count[current_level] <= 0;
     }
 
 }
