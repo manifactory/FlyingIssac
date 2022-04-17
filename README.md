@@ -4,6 +4,6 @@
 
 5팀- 떳다떳다 아이작
 
-게임명 : The binding of Issac : Flight
+게임명: The binding of Issac : Flight
 
-Unity 버전 : 2021.2.15f1
+Unity 버전: 2021.2.15f1
