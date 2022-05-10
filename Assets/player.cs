@@ -53,7 +53,6 @@ public class player : MonoBehaviour
         
         switch(o.gameObject.tag)
         {
-
         case "Bullet":
         if(o.GetComponent<bullet>().target == "Player")
         {
@@ -166,14 +165,7 @@ public class player : MonoBehaviour
 
                 GameObject.Find("ShootBulletWraper").GetComponent<ShootBulletWraper>()
             .ShootBullet(bullet_type, spawnpos, velo: new Vector3(momentum.x,momentum.y+5.0f,0));
-                
             }
-            
-            
-
-            
-            
-            
         }
     }
 
